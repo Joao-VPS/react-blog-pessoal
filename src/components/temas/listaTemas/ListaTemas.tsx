@@ -11,10 +11,10 @@ function ListaTemas() {
 
   let navigate = useNavigate()
 
-   const {usuario, handleLogout} = useContext(AuthContext);
-   const token = usuario.token;
+  const {usuario, handleLogout} = useContext(AuthContext);
+  const token = usuario.token;
 
-   async function buscarTemas() {
+  async function buscarTemas() {
     try {
       await buscar('/temas', setTemas, {
         headers: {Authorization: token },
@@ -25,29 +25,38 @@ function ListaTemas() {
         handleLogout
       }
     }
-   }
+  }
 
-   useEffect(() => {
+  useEffect(() => {
     if (token === '') {
       alert('Você precisa estar logado');
       navigate('/login');
     }
-   }, [token]);
+  }, [token]);
 
-   useEffect(() => {
+  useEffect(() => {
     buscarTemas();
-   }, [temas.length]);
+  }, [temas.length]);
+
+  function criarTema() {
+    navigate('/cadastroTema')
+  }
 
   return (
     <>
       {temas.length === 0 && (
-        <DNA
-          visible={true}
-          height="200"
-          width="200"
-          ariaLabel='dna-loading'
-          wrapperStyle={{}}
-          wrapperClass='dna-wrapper mx-auto' />
+        <>
+          <DNA
+            visible={true}
+            height="200"
+            width="200"
+            ariaLabel='dna-loading'
+            wrapperStyle={{}}
+            wrapperClass='dna-wrapper mx-auto' />
+
+          <p>Parece que nenhum tema foi criado ainda...</p>
+          <button onClick={criarTema}>Deseja criar um tema?</button>
+        </>
       )}
 
       <div className='flex justify-center w-full my-4'>
