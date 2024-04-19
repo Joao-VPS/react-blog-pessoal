@@ -5,32 +5,28 @@ import { AuthContext } from '../../contexts/AuthContext'
 import { DNA } from 'react-loader-spinner'
 import CardPostagens from './CardPostagens'
 import { buscar } from '../../services/Service'
+import { toastAlerta } from '../../utils/toastAlerta'
 
 function ListaPostagens() {
     const [postagens, setPostagens] = useState<Postagem[]>([])
 
     let navigate = useNavigate()
 
-    const {usuario, handleLogout} = useContext(AuthContext)
+    const {usuario} = useContext(AuthContext)
     const token = usuario.token
 
     async function buscarPostagens() {
-        try {
-            await buscar('/postagens', setPostagens, {
-                headers: {Authorization: token}
-            })
-        } catch(error: any) {
-            if (error.toString().includes('403')) {
-                alert('Sessão inválida. Faça o login novamente!')
-                handleLogout
+        await buscar('/postagens', setPostagens, {
+            headers: {
+                Authorization: token,
             }
-        }
+        })
     }
 
     useEffect(() => {
         if (token === '') {
-            alert('Você precisa fazer login para acessar esta página.')
-            navigate('/login')
+            toastAlerta('Você precisa fazer login para acessar esta página.', 'erro')
+            navigate('/')
         }
     }, [token])
 
@@ -54,16 +50,16 @@ function ListaPostagens() {
                         wrapperStyle={{}}
                         wrapperClass='dna-wraper mx-auto'/>
                     <p>Parece que nada foi postado ainda...</p>
-                    <button onClick={criarPostagem}>Deseja criar uma postagem?</button>
                 </>}
             
-            <div>
+            <div className='container mx-auto my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                 {postagens.map((postagem) => (
                     <>
-                        <CardPostagens key={postagem.id} postagem={postagem} />
+                        <CardPostagens key={postagem.id} post={postagem} />
                     </>
                 ))}
             </div>
+            <button onClick={criarPostagem} className='mb-4'>Deseja criar uma postagem?</button>
         </>
     )
 }

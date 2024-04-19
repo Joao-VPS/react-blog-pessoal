@@ -3,6 +3,7 @@ import Tema from '../../../models/Tema'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AuthContext } from '../../../contexts/AuthContext'
 import { buscar, deletar } from '../../../services/Service'
+import { toastAlerta } from '../../../utils/toastAlerta'
 
 function DeletarTema() {
     const [tema, setTema] = useState<Tema>({} as Tema)
@@ -23,7 +24,7 @@ function DeletarTema() {
             })
         } catch (error: any) {
             if (error.toString().includes('403')) {
-                alert('Sua sessão expirou, por favor faça o login novamente')
+                toastAlerta('Sua sessão expirou, por favor faça o login novamente', 'erro')
                 handleLogout()
             }
         }
@@ -31,7 +32,7 @@ function DeletarTema() {
 
     useEffect(() => {
         if (token === '') {
-            alert('Você precisa estar logado')
+            toastAlerta('Você precisa estar logado', 'erro')
             navigate('/login')
         }
     }, [token])
@@ -46,6 +47,18 @@ function DeletarTema() {
         navigate('/temas')
     }
     
+    function mostrarErro(error: any) {
+        let errorList = error.response.data.errors
+
+        if (errorList.length === 0) {
+            toastAlerta("Erro ao apagar tema", 'erro')
+        } else {
+            errorList.map((erro: {defaultMessage: string}) => {
+                toastAlerta(erro.defaultMessage, 'erro')
+            })
+        }
+    }
+
     async function deletarTema() {
         try {
             await deletar(`/temas/${id}`, {
@@ -54,15 +67,15 @@ function DeletarTema() {
                 }
             })
 
-            alert('Tema apagado com sucesso')
+            toastAlerta('Tema apagado com sucesso', 'sucesso')
             retornar()
 
         } catch (error: any) {
             if (error.toString().includes('403')) {
-                alert('Sua sessão expirou, faça o login novamente')
+                toastAlerta('Sua sessão expirou, faça o login novamente', 'erro')
                 handleLogout()
             } else {
-                alert('Erro ao apagar tema')
+                mostrarErro(error)
             }
         }        
     }

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useContext } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
+import { toastAlerta } from '../../utils/toastAlerta'
 
 
 function Navbar() {
@@ -10,29 +11,47 @@ function Navbar() {
 
   function logout() {
     handleLogout()
-    alert('Usuário deslogado com sucesso')
+    toastAlerta('Usuário deslogado com sucesso', 'sucesso')
     navigate('/login')
   }
 
   let navBarComponent
 
-  return (
-    <>
-     <div className='w-full bg-indigo-900 text-white flex justify-center py-4'>
-          <div className="container flex justify-between text-lg">
-            <div className='text-2xl font-bold uppercase'>Blog Pessoal</div>
-
-            <div className='flex flex-wrap gap-4'>
-              <Link to='/login' className='hover:underline'>Login</Link>
-              <Link to='/home' className='hover:underline'>Home</Link>
-              <Link to='/postagens' className='hover:underline'>Postagens</Link>
-              <Link to='/temas' className='hover:underline'>Temas</Link>
-              <Link to='/cadastroTema' className='hover:underline'>Cadastrar tema</Link>
-              <div className='hover:underline'>Perfil</div>
-              <Link to='' onClick={logout} className='hover:underline'>Sair</Link>
-            </div>
+  if (usuario.token !== "") {
+    navBarComponent = (
+      <div className='w-full bg-indigo-900 text-white flex justify-center py-4'>
+        <div className="container flex justify-between text-lg">
+          <div className='text-2xl font-bold uppercase'>Blog Pessoal</div>
+  
+          <div className='flex flex-wrap gap-4'>
+            <Link to='/home' className='hover:underline'>Home</Link>
+            <Link to='/postagens' className='hover:underline'>Postagens</Link>
+            <Link to='/temas' className='hover:underline'>Temas</Link>
+            <Link to='/cadastroTema' className='hover:underline'>Cadastrar tema</Link>
+            <Link to='/perfil' className='hover:underline'>Perfil</Link>
+            <Link to='' onClick={logout} className='hover:underline'>Sair</Link>
           </div>
         </div>
+      </div>
+    )
+  } else if (window.location.pathname.includes('/post/')) {
+    navBarComponent = (
+      <div className='w-full bg-indigo-900 text-white flex justify-center py-4'>
+        <div className="container flex justify-between text-lg">
+          <div className='text-2xl font-bold uppercase'>Blog Pessoal</div>
+  
+          <div className='flex flex-wrap gap-4'>
+            <Link to='/login' className='hover:underline'>Login</Link>
+            <Link to='/cadastro' className='hover:underline'>Cadastrar</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <>
+     { navBarComponent }
     </>
   )
 }

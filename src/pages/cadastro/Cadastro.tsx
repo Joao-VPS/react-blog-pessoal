@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Usuario from '../../models/Usuario'
 import { cadastrarUsuario } from '../../services/Service'
 import './Cadastro.css'
+import { toastAlerta } from '../../utils/toastAlerta'
 
 function Cadastro() {
 
@@ -47,24 +48,31 @@ function Cadastro() {
     })
   }
 
+  function mostrarErro(error: any) {
+    let errorList = error.response.data.errors
+    
+    if (errorList.length === 0) {
+      toastAlerta("Erro ao cadastrar usuário", 'erro')
+    } else {
+      errorList.map((erro: { defaultMessage: string }) => {
+        toastAlerta(erro.defaultMessage, 'erro')
+      }
+    )}
+  }
+
   async function cadastrarNovoUsuario(e: ChangeEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (confirmaSenha === usuario.senha && usuario.senha.length >= 8) {
+    try {
+      await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuarioResposta)
+      toastAlerta('Usuário cadastrado com sucesso', 'sucesso')
 
-      try {
-        await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuarioResposta)
-        alert('Usuário cadastrado com sucesso')
-
-      } catch (error) {
-        alert('Erro ao cadastrar o Usuário')
-      }
-
-    } else {
-      alert('Dados inconsistentes. Verifique as informações de cadastro.')
+    } catch (error: any) {
+      mostrarErro(error)
       setUsuario({ ...usuario, senha: "" }) // Reinicia o campo de Senha
       setConfirmaSenha("")                  // Reinicia o campo de Confirmar Senha
     }
+
   }
 
   return (

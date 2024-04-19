@@ -3,6 +3,7 @@ import Tema from '../../../models/Tema';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { atualizar, buscar, cadastrar } from '../../../services/Service';
+import { toastAlerta } from '../../../utils/toastAlerta';
 
 function FormularioTema() {
     const [tema, setTema] = useState<Tema>({} as Tema);
@@ -23,7 +24,7 @@ function FormularioTema() {
             })
         } catch(error: any) {
             if(error.toString().includes('403')) {
-                alert('O token expirou, favor logar novamente')
+                toastAlerta('O token expirou, favor logar novamente', 'erro')
                 handleLogout()
             }
         }
@@ -37,7 +38,7 @@ function FormularioTema() {
 
     useEffect(() => {
         if (token === '') {
-            alert('Você precisa estar logado');
+            toastAlerta('Você precisa estar logado', 'erro');
             navigate('/login')
         }
     })
@@ -51,6 +52,18 @@ function FormularioTema() {
         console.log(JSON.stringify(tema))
     }
 
+    function mostrarErro(error: any) {
+        let errorList = error.response.data.errors
+
+        if (errorList.length === 0) {
+            toastAlerta('Erro ao cadastrar o tema', 'erro')
+        } else {
+            errorList.map((erro: {defaultMessage: string}) => {
+                toastAlerta(erro.defaultMessage, 'erro')
+            })
+        }
+    }
+
     async function gerarNovoTema(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault()
 
@@ -62,15 +75,15 @@ function FormularioTema() {
                     }
                 })
 
-                alert('Tema atualizado com sucesso')
+                toastAlerta('Tema atualizado com sucesso', 'sucesso')
                 retornar()
 
             } catch (error: any) {
                 if (error.toString().includes('403')) {
-                    alert('Seu tempo expirou, faça o login novamente')
+                    toastAlerta('Seu tempo expirou, faça o login novamente', 'erro')
                     handleLogout()
                 } else {
-                    alert('Erro ao cadastrar o tema')
+                    mostrarErro(error)
                 }
             }
         } else {
@@ -81,14 +94,14 @@ function FormularioTema() {
                     }
                 })
 
-                alert('Tema cadastrado com sucesso')
+                toastAlerta('Tema cadastrado com sucesso', 'sucesso')
                 retornar()
             } catch (error: any) {
                 if (error.toString().includes('403')) {
-                    alert('Seu tempo expirou, faça o login novamente')
+                    toastAlerta('Seu tempo expirou, faça o login novamente', 'erro')
                     handleLogout()
                 } else {
-                    alert('Erro ao cadastar o tema')
+                    mostrarErro(error)
                 }
             }
         }
