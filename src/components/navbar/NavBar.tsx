@@ -18,8 +18,8 @@ function Navbar() {
   let navBarComponent
 
   if (usuario.token !== "") {
-    navBarComponent = (
-      <div className='w-full bg-indigo-900 text-white flex justify-center py-4'>
+    navBarComponent = (<>
+      <div className='fixed w-full bg-indigo-900 text-white flex justify-center py-4'>
         <div className="container flex justify-between text-lg">
           <div className='text-2xl font-bold uppercase'>Blog Pessoal</div>
   
@@ -33,7 +33,8 @@ function Navbar() {
           </div>
         </div>
       </div>
-    )
+      <div className='py-12 md:py-8'/>
+    </>)
   } else if (window.location.pathname.includes('/post/')) {
     navBarComponent = (
       <div className='w-full bg-indigo-900 text-white flex justify-center py-4'>

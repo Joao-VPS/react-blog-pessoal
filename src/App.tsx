@@ -18,7 +18,7 @@ import Perfil from './pages/perfil/Perfil';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NotFound from './pages/notfound/NotFound';
-import Postagem from './components/postagens/Postagem';
+import PagePostagem from './components/postagens/PagePostagem';
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Navbar />
-          <div className='min-h-[80vh]'>
+          <div className='min-h-[70vh]'>
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
@@ -38,8 +38,8 @@ function App() {
               <Route path="/editarTema/:id" element={<FormularioTema />} />
               <Route path="/deletarTema/:id" element={<DeletarTema />} />
               <Route path='/postagens' element={<ListaPostagens />} />
-              <Route path='/post/:id' element={<Postagem />} />
-              <Route path='/post/titulo/:titulo' element={<Postagem />} />
+              <Route path='/post/:id' element={<PagePostagem />} />
+              <Route path='/post/titulo/:titulo' element={<PagePostagem />} />
               <Route path='/criarPostagem' element={<FormularioPostagem />} />
               <Route path='/editarPostagem/:id' element={<FormularioPostagem />} />
               <Route path='/deletarPostagem/:id' element={<DeletarPostagem />} />

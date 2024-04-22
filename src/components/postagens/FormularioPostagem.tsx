@@ -95,6 +95,7 @@ function FormularioPostagem() {
       })
     }
   }
+  
   async function gerarNovaPostagem(e: ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
 
